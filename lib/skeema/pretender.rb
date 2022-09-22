@@ -33,8 +33,11 @@ module ActiveRecord
     end
 
     def method_missing(data_type, *column_names_and_options)
-      column_names_and_options.pop if column_names_and_options.last.is_a?(Hash)
-      @columns += column_names_and_options
+      @columns += if column_names_and_options.last.is_a?(Hash)
+        [[column_names_and_options.first, column_names_and_options.last.merge(data_type: data_type)]]
+      else
+        [column_names_and_options << {data_type: data_type}]
+      end
     end
   end
 end
