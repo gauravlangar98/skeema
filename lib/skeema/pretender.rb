@@ -1,5 +1,9 @@
 module ActiveRecord
   class Schema
+    #   attr_reader :schema
+
+    # def initialize(schema)
+  # end
     def create_table(table_name, options={}, &block)
       table = Table.new(table_name)
       yield table if block_given?
@@ -7,7 +11,7 @@ module ActiveRecord
     end
 
     def method_missing(*args)
-      # ignore add_index, etc.
+      # ignore add_index 
     end
 
     def self.define(*args, &block)
@@ -29,14 +33,14 @@ module ActiveRecord
 
     def initialize(name)
       @name = name
-      @columns = []
+      @columns = {}
     end
 
     def method_missing(data_type, *column_names_and_options)
-      @columns += if column_names_and_options.last.is_a?(Hash)
-        [[column_names_and_options.first, column_names_and_options.last.merge(data_type: data_type)]]
+      if column_names_and_options.last.is_a?(Hash)
+        @columns[column_names_and_options.first] = column_names_and_options.last.merge(data_type: data_type)
       else
-        [column_names_and_options << {data_type: data_type}]
+        @columns[column_names_and_options.first] = {data_type: data_type}
       end
     end
   end
