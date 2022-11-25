@@ -21,6 +21,7 @@ module ActiveRecord
     def self.add_table(table_name, columns)
       @schema ||= {}
       @schema[table_name] = columns
+      @schema[table_name][:data_type] = 'table' unless columns.is_a?(Hash)
     end
 
     def self.schema
